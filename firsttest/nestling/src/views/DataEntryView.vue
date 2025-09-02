@@ -120,6 +120,7 @@ const isErrorPanelVisible = ref(false);
 const panelWidth = ref(240);
 const editingCell = ref(null);
 
+<<<<<<< HEAD
 // --- Calculation Engine (Simplified & Robust) ---
 const getRowById = (id) => tableData.value.find(r => r.id === id);
 
@@ -134,6 +135,31 @@ const validateCell = (row, monthKey, field) => {
   }
 };
 
+=======
+// --- Data Initialization & Reactivity ---
+watch(() => route.params.id, (newId) => {
+  if (newId) initializeTableData();
+}, { immediate: true });
+
+const initializeTableData = () => {
+  errors.value = {};
+  explanations.value = {};
+  isErrorPanelVisible.value = false;
+  tableData.value = reportTemplate.map(item => {
+    const monthlyData = {};
+    months.value.forEach(month => {
+      monthlyData[month.key] = { plan: 0, samePeriod: 0 };
+    });
+    return { ...item, monthlyData, totals: { plan: 0, samePeriod: 0 } };
+  });
+  updateAllCalculations();
+  initialValidation();
+};
+
+// --- Calculation Engine (Simplified & Robust) ---
+const getRowById = (id) => tableData.value.find(r => r.id === id);
+
+>>>>>>> da9938b85cfba1c449143c6ca01a3b278ea12cb6
 const updateAllCalculations = () => {
   if (tableData.value.length === 0) return;
 
@@ -157,6 +183,7 @@ const updateAllCalculations = () => {
   });
 };
 
+<<<<<<< HEAD
 const initialValidation = () => {
   tableData.value.forEach(row => {
     if (row.type === 'basic') {
@@ -185,6 +212,9 @@ watch(() => route.params.id, (newId) => {
   if (newId) initializeTableData();
 }, { immediate: true });
 
+=======
+// --- Editing & Validation ---
+>>>>>>> da9938b85cfba1c449143c6ca01a3b278ea12cb6
 const isEditing = (rowId, monthKey) => editingCell.value === `${rowId}-${monthKey}`;
 
 const startEdit = (row, monthKey) => {
@@ -199,6 +229,27 @@ const finishEdit = (row, monthKey) => {
   updateAllCalculations();
 };
 
+<<<<<<< HEAD
+=======
+const validateCell = (row, monthKey, field) => {
+  const key = `${row.id}-${monthKey}-${field}`;
+  const value = row.monthlyData[monthKey][field];
+  if (isNaN(Number(value)) || String(value).trim() === '') {
+    errors.value[key] = { type: 'A', message: '必须输入有效的数字值' };
+  } else {
+    delete errors.value[key];
+  }
+};
+
+const initialValidation = () => {
+  tableData.value.forEach(row => {
+    if (row.type === 'basic') {
+      months.value.forEach(month => validateCell(row, month.key, 'plan'));
+    }
+  });
+};
+
+>>>>>>> da9938b85cfba1c449143c6ca01a3b278ea12cb6
 // ... (The rest of the file is identical to the last fully-featured version) ...
 const closeErrorPanel = () => { isErrorPanelVisible.value = false; };
 const startResize = (event) => {
